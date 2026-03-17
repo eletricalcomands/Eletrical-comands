@@ -1,138 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ELECTRICAL COMMANDS</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
-
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-
-<link rel="manifest" href="manifest.json">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
     
     <meta name="theme-color" content="#0c3328">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://i.imgur.com/v2mR6vY.png"> <style>
-        /* Cores Oficiais Electrical Commands */
+
+    <style>
+        /* Estética Profissional Electrical Commands */
         body { font-family: 'Segoe UI', sans-serif; background: #0c3328; color: #ecfdf5; margin: 0; padding: 15px; }
         
+        /* Cabeçalho com o Hexágono Original da Foto */
         .header { text-align: center; color: #10b981; margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; }
         .logo-symbol { width: 100px; height: auto; margin-bottom: 15px; } 
         
+        /* Filtros Superiores */
         .filtros { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
         .btn-f { min-width: 90px; padding: 12px; border-radius: 8px; border: 1px solid #10b981; background: transparent; color: white; cursor: pointer; font-size: 11px; font-weight: bold; }
         .btn-f.active { background: #10b981; color: #0c3328; box-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
 
-        .cad { background: rgba(12, 51, 40, 0.8); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #10b981; }
-        input, select { width: 100%; padding: 14px; margin: 6px 0; border-radius: 8px; border: 1px solid #10b981; background: #0c4a3b; color: white; box-sizing: border-box; }
-        .btn-add { width: 100%; padding: 15px; background: #10b981; border: none; color: #0c3328; border-radius: 8px; font-weight: bold; margin-top: 15px; }
+        /* Painel de Cadastro */
+        .cad { background: rgba(12, 51, 40, 0.8); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #10b981; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        input, select { width: 100%; padding: 14px; margin: 6px 0; border-radius: 8px; border: 1px solid #10b981; background: #0c4a3b; color: white; box-sizing: border-box; outline: none; }
+        .btn-add { width: 100%; padding: 15px; background: #10b981; border: none; color: #0c3328; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 14px; }
 
-        .card { background: #0c4a3b; padding: 18px; border-radius: 12px; margin-bottom: 12px; border-left: 8px solid #10b981; display: none; }
+        /* Cartões de Usinas */
+        .card { background: #0c4a3b; padding: 18px; border-radius: 12px; margin-bottom: 12px; border-left: 8px solid #10b981; display: none; transition: 0.3s; }
         .btn-ir { display: block; background: #10b981; color: #0c3328; text-align: center; padding: 14px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 12px; font-size: 15px; }
         .info { font-size: 13px; color: #a7f3d0; display: block; margin: 8px 0; }
-        .del { background: transparent; color: #ef4444; border: none; font-size: 10px; margin-top: 15px; cursor: pointer; text-decoration: underline; }
-        
-        /* Botão de Instalação (Só aparece se o navegador permitir) */
-        #installArea { display: none; background: #10b981; color: #0c3328; padding: 10px; text-align: center; border-radius: 8px; margin-bottom: 20px; font-weight: bold; cursor: pointer; }
+        .tag-m { font-size: 10px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-bottom: 5px; display: inline-block; }
+        .del { background: transparent; color: #ef4444; border: none; font-size: 10px; margin-top: 15px; cursor: pointer; text-decoration: underline; padding: 5px; }
+
+        /* Botão Instalar (PWA) */
+        #pwaInstall { display: none; background: #10b981; color: #0c3328; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 20px; font-weight: bold; cursor: pointer; border: 2px solid #ecfdf5; }
     </style>
 </head>
 <body>
 
-    <div id="installArea" onclick="installApp()">⬇ INSTALAR ELECTRICAL COMMANDS</div>
+    <div id="pwaInstall" onclick="triggerInstall()">⬇ INSTALAR APP ELECTRICAL COMMANDS</div>
 
     <div class="header">
         <svg class="logo-symbol" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M50 2L96.6025 28V72L50 98L3.39745 72V28L50 2Z" stroke="#ecfdf5" stroke-width="3"/>
             <path d="M50 8L91.4051 31V69L50 92L8.59489 69V31L50 8Z" stroke="#10b981" stroke-width="3"/>
-            <text x="38" y="65" fill="#10b981" font-family="Arial" font-size="38" font-weight="bold">EC</text>
+            <text x="38" y="63" fill="#10b981" font-family="Arial, sans-serif" font-size="34" font-weight="bold">EC</text>
         </svg>
-        <h2>ELECTRICAL COMMANDS</h2>
-        <small>Gestão Técnica de Inversores Solares</small>
+        <h2 style="margin: 0; font-size: 22px; letter-spacing: 1px;">ELECTRICAL COMMANDS</h2>
+        <small style="color: #a7f3d0; opacity: 0.8;">Gestão Técnica de Usinas Fotovoltaicas</small>
     </div>
 
     <div class="filtros">
-        <button class="btn-f active" onclick="filtrar('T', this)">ALL</button>
+        <button class="btn-f active" onclick="filtrar('T', this)">ALL PLANTS</button>
         <button class="btn-f" onclick="filtrar('SUNGROW', this)">SUNGROW</button>
         <button class="btn-f" onclick="filtrar('GROWATT', this)">GROWATT</button>
         <button class="btn-f" onclick="filtrar('WEG', this)">WEG</button>
     </div>
 
     <div class="cad">
+        <strong style="color: #10b981; margin-bottom: 12px; display: block; font-size: 14px;">+ NEW COMMAND</strong>
         <input type="text" id="n" placeholder="Client Name (Ex: Daniel)">
         <select id="m">
             <option value="SUNGROW">SUNGROW</option>
             <option value="GROWATT">GROWATT</option>
             <option value="WEG">WEG</option>
         </select>
-        <input type="text" id="s" placeholder="Serial Number (S/N)">
+        <input type="text" id="s" placeholder="Inverter Serial Number (S/N)">
         <input type="text" id="l" placeholder="Plant Deep Link (Paste URL)">
-        <button class="btn-add" onclick="add()">+ REGISTER COMMANDS</button>
+        <button class="btn-add" onclick="add()">REGISTER SYSTEM</button>
     </div>
 
     <div id="lista"></div>
 
     <script>
-        // Lógica do App
         let fAtual = 'T';
+
         function add() {
             const nome = document.getElementById('n').value;
             const marca = document.getElementById('m').value;
             const serial = document.getElementById('s').value || '---';
             const link = document.getElementById('l').value;
-            if(!nome) return alert("Digite o nome!");
-            const db = JSON.parse(localStorage.getItem('ec_pwa_v1') || '[]');
+
+            if(!nome) return alert("Please enter the client name!");
+
+            const db = JSON.parse(localStorage.getItem('ec_commands_db_final') || '[]');
             db.push({nome, marca, serial, link});
-            localStorage.setItem('ec_pwa_v1', JSON.stringify(db));
-            document.getElementById('n').value = ''; document.getElementById('s').value = ''; document.getElementById('l').value = '';
+            localStorage.setItem('ec_commands_db_final', JSON.stringify(db));
+            
+            document.getElementById('n').value = '';
+            document.getElementById('s').value = '';
+            document.getElementById('l').value = '';
             render();
         }
 
         function render() {
-            const db = JSON.parse(localStorage.getItem('ec_pwa_v1') || '[]');
+            const db = JSON.parse(localStorage.getItem('ec_commands_db_final') || '[]');
             const lista = document.getElementById('lista');
             lista.innerHTML = '';
+
             db.forEach((c, i) => {
                 let url = c.link || (c.marca === 'SUNGROW' ? 'https://www.isolarcloud.com.br' : (c.marca === 'GROWATT' ? 'https://server.growatt.com' : 'https://www.weg.net/solar'));
-                if (fAtual === 'T' || fAtual === c.marca) {
-                    lista.innerHTML += `<div class="card" style="display:block">
-                        <small>${c.marca}</small><br><strong>${c.nome.toUpperCase()}</strong>
+                
+                const show = (fAtual === 'T' || fAtual === c.marca);
+                let corBorda = c.marca === 'SUNGROW' ? '#ff9f43' : (c.marca === 'GROWATT' ? '#1dd1a1' : '#10b981');
+
+                lista.innerHTML += `
+                    <div class="card" style="display: ${show ? 'block' : 'none'}; border-left-color: ${corBorda}">
+                        <span class="tag-m">${c.marca}</span><br>
+                        <strong style="font-size: 18px; color: #fff;">${c.nome.toUpperCase()}</strong>
                         <span class="info">S/N: ${c.serial}</span>
-                        <a href="${url}" target="_blank" class="btn-ir">OPEN COMMANDS GERAÇÃO</a>
-                        <button class="del" onclick="del(${i})">Remove Registro</button>
+                        <a href="${url}" target="_blank" class="btn-ir">OPEN GENERATION COMMANDS</a>
+                        <button class="del" onclick="del(${i})">Delete Plant</button>
                     </div>`;
-                }
             });
         }
 
         function filtrar(m, btn) {
-            fAtual = m; document.querySelectorAll('.btn-f').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active'); render();
+            fAtual = m;
+            document.querySelectorAll('.btn-f').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render();
         }
 
         function del(i) {
-            if(confirm("Apagar?")) {
-                const db = JSON.parse(localStorage.getItem('ec_pwa_v1') || '[]');
-                db.splice(i, 1); localStorage.setItem('ec_pwa_v1', JSON.stringify(db)); render();
+            if(confirm("Confirm deletion of this system?")) {
+                const db = JSON.parse(localStorage.getItem('ec_commands_db_final') || '[]');
+                db.splice(i, 1);
+                localStorage.setItem('ec_commands_db_final', JSON.stringify(db));
+                render();
             }
         }
 
-        // Lógica de Instalação PWA
+        // Lógica de Instalação PWA (Botão)
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('installArea').style.display = 'block';
+            document.getElementById('pwaInstall').style.display = 'block';
         });
 
-        async function installApp() {
+        async function triggerInstall() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('installArea').style.display = 'none';
-                }
+                if (outcome === 'accepted') document.getElementById('pwaInstall').style.display = 'none';
                 deferredPrompt = null;
             }
         }
