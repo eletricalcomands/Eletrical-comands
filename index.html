@@ -154,7 +154,11 @@
                 deferredPrompt = null;
             }
         }
-
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
+    
         render();
     </script>
 </body>
