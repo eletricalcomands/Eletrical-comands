@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EC Commands - Gestão</title>
+    <title>Sinergia Elétrica - Dashboard</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -12,6 +12,7 @@
             --card: #164235;
             --text: #ffffff;
             --accent: #3b82f6;
+            --warning: #fbbf24;
         }
 
         body {
@@ -22,28 +23,27 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 30px;
+            padding-bottom: 50px;
         }
 
         header { text-align: center; padding: 25px 10px; }
-        header img { width: 80px; margin-bottom: 10px; }
-        header h1 { font-size: 1.4rem; margin: 0; letter-spacing: 2px; }
-        header p { font-size: 0.8rem; opacity: 0.7; margin: 5px 0; }
+        header img { width: 60px; margin-bottom: 5px; }
+        header h1 { font-size: 1.3rem; margin: 0; color: var(--primary); letter-spacing: 1px; }
 
         .container {
-            width: 90%;
+            width: 92%;
             max-width: 450px;
             background: var(--card);
             padding: 20px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             margin-bottom: 25px;
         }
 
-        h2 { color: var(--primary); font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 20px; }
+        h2 { font-size: 0.9rem; text-transform: uppercase; color: var(--primary); margin-bottom: 15px; border-bottom: 1px solid rgba(16,185,129,0.2); padding-bottom: 5px; }
 
         .input-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--primary); font-weight: bold; }
+        label { display: block; margin-bottom: 4px; font-size: 0.75rem; opacity: 0.9; font-weight: bold; }
         
         input, select {
             width: 100%;
@@ -53,7 +53,7 @@
             background: #0c3328;
             color: white;
             box-sizing: border-box;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .row { display: flex; gap: 10px; }
@@ -61,56 +61,55 @@
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             border-radius: 10px;
             border: none;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+            transition: 0.2s;
         }
 
-        .btn-register { background: var(--primary); color: white; }
-        .btn-portal { background: var(--accent); color: white; margin-top: 5px; }
-        button:active { transform: scale(0.95); }
+        .btn-register { background: var(--primary); color: #0c3328; margin-top: 10px; }
+        .btn-portal { background: transparent; border: 2px solid var(--accent); color: var(--accent); margin-top: 10px; }
 
-        /* Estilo da Tabela/Lista */
-        .list-container { width: 95%; max-width: 500px; }
+        /* Estilo da Listagem */
+        .list-container { width: 92%; max-width: 480px; }
         .usina-card {
             background: var(--card);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--primary);
+            border-radius: 15px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .usina-info h3 { margin: 0; font-size: 1rem; color: var(--primary); }
-        .usina-info p { margin: 2px 0; font-size: 0.75rem; opacity: 0.8; }
-        .stats { text-align: right; }
-        .stats span { display: block; font-size: 0.9rem; font-weight: bold; color: #fbbf24; }
-        .stats small { font-size: 0.7rem; opacity: 0.6; }
 
-        .btn-delete { background: #ef4444; color: white; padding: 5px 10px; font-size: 0.7rem; width: auto; margin: 0; }
+        .card-header { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px; }
+        .card-header h3 { margin: 0; font-size: 1rem; color: #fff; }
+        
+        .section-title { font-size: 0.65rem; text-transform: uppercase; color: var(--primary); font-weight: bold; margin-bottom: 5px; display: block; }
+        
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; }
+        .data-item p { margin: 0; font-size: 0.85rem; font-weight: bold; }
+        .data-item small { font-size: 0.65rem; opacity: 0.6; display: block; text-transform: uppercase; }
+
+        .date-footer { margin-top: 10px; font-size: 0.65rem; opacity: 0.5; font-style: italic; display: flex; justify-content: space-between; align-items: center; }
+        .btn-delete { background: transparent; color: #ff4444; border: none; font-size: 0.65rem; width: auto; padding: 0; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="web-app-manifest-192x192.png" alt="Logo">
+        <img src="web-app-manifest-192x192.png" alt="Sinergia">
         <h1>SINERGIA ELÉTRICA</h1>
-        <p>Dashboard de Comandos e Usinas</p>
     </header>
 
     <div class="container">
-        <h2>REGISTRAR USINA</h2>
-        
+        <h2>Dados do Inversor (Fixos)</h2>
         <form id="commandForm">
             <div class="input-group">
-                <label>Cliente / Nome da Planta</label>
-                <input type="text" id="clientName" required placeholder="Ex: Mercado Central">
+                <label>Cliente / Usina</label>
+                <input type="text" id="clientName" required placeholder="Ex: Sítio Pôr do Sol">
             </div>
 
             <div class="row">
@@ -126,28 +125,29 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Geração (kWh)</label>
-                    <input type="number" id="generation" placeholder="0.0">
+                    <label>Nº de Série (S/N)</label>
+                    <input type="text" id="serialNumber" required placeholder="S/N do Equipamento">
                 </div>
             </div>
 
-            <div class="input-group">
-                <label>Tempo de Atividade (Uptime)</label>
-                <input type="text" id="uptime" placeholder="Ex: 1200 horas">
+            <h2 style="margin-top: 20px;">Detalhes da Medição (Variáveis)</h2>
+            <div class="row">
+                <div class="input-group">
+                    <label>Geração (kWh)</label>
+                    <input type="number" id="generation" step="0.1" placeholder="0.0">
+                </div>
+                <div class="input-group">
+                    <label>Uptime/Status</label>
+                    <input type="text" id="uptime" placeholder="Ex: 1200h">
+                </div>
             </div>
 
-            <button type="button" class="btn-portal" onclick="abrirPortal()">
-                🌐 PORTAL DE MONITORAMENTO
-            </button>
-
-            <button type="submit" class="btn-register">
-                SALVAR NA LISTA
-            </button>
+            <button type="submit" class="btn-register">Salvar Registro Completo</button>
+            <button type="button" class="btn-portal" onclick="abrirPortal()">🌐 Abrir Portal da Marca</button>
         </form>
     </div>
 
     <div class="list-container" id="usinaList">
-        <h2>USINAS MONITORADAS</h2>
         </div>
 
     <script>
@@ -165,24 +165,37 @@
             window.open(portalLinks[marca], '_blank');
         }
 
-        // Lógica para Salvar e Exibir Usinas
         const form = document.getElementById('commandForm');
         const list = document.getElementById('usinaList');
 
         function loadUsinas() {
-            const usinas = JSON.parse(localStorage.getItem('usinas') || '[]');
-            list.innerHTML = '<h2>USINAS MONITORADAS</h2>';
-            usinas.forEach((u, index) => {
+            const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
+            list.innerHTML = '<h2 style="text-align:center">Histórico Técnico</h2>';
+            
+            usinas.slice().reverse().forEach((u, index) => {
+                const actualIndex = usinas.length - 1 - index;
                 list.innerHTML += `
                     <div class="usina-card">
-                        <div class="usina-info">
+                        <div class="card-header">
                             <h3>${u.nome}</h3>
-                            <p>Marca: ${u.marca}</p>
-                            <button class="btn-delete" onclick="removerUsina(${index})">Excluir</button>
+                            <span style="color:var(--primary); font-size:0.7rem; font-weight:bold">${u.marca}</span>
                         </div>
-                        <div class="stats">
-                            <span>${u.geracao} kWh</span>
-                            <small>${u.tempo}</small>
+                        
+                        <span class="section-title">Registro do Inversor</span>
+                        <div class="data-grid" style="margin-bottom:10px">
+                            <div class="data-item"><small>Marca</small><p>${u.marca}</p></div>
+                            <div class="data-item"><small>Nº de Série</small><p>${u.sn}</p></div>
+                        </div>
+
+                        <span class="section-title">Detalhes da Geração</span>
+                        <div class="data-grid">
+                            <div class="data-item"><small>Total Gerado</small><p style="color:var(--warning)">${u.geracao} kWh</p></div>
+                            <div class="data-item"><small>Tempo de Atividade</small><p>${u.tempo}</p></div>
+                        </div>
+
+                        <div class="date-footer">
+                            <span>📅 ${u.data}</span>
+                            <button class="btn-delete" onclick="removerUsina(${actualIndex})">Excluir</button>
                         </div>
                     </div>
                 `;
@@ -191,30 +204,32 @@
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+            const agora = new Date();
+            const dataFormatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
             const novaUsina = {
                 nome: document.getElementById('clientName').value,
                 marca: document.getElementById('inverterBrand').value,
+                sn: document.getElementById('serialNumber').value,
                 geracao: document.getElementById('generation').value || '0',
-                tempo: document.getElementById('uptime').value || 'N/A'
+                tempo: document.getElementById('uptime').value || 'N/A',
+                data: dataFormatada
             };
 
-            const usinas = JSON.parse(localStorage.getItem('usinas') || '[]');
+            const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
             usinas.push(novaUsina);
-            localStorage.setItem('usinas', JSON.stringify(usinas));
+            localStorage.setItem('usinas_v2', JSON.stringify(usinas));
             form.reset();
             loadUsinas();
         });
 
         function removerUsina(index) {
-            const usinas = JSON.parse(localStorage.getItem('usinas') || '[]');
-            usinas.splice(index, 1);
-            localStorage.setItem('usinas', JSON.stringify(usinas));
-            loadUsinas();
-        }
-
-        // PWA Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            if(confirm("Excluir este registro técnico?")) {
+                const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
+                usinas.splice(index, 1);
+                localStorage.setItem('usinas_v2', JSON.stringify(usinas));
+                loadUsinas();
+            }
         }
 
         loadUsinas();
