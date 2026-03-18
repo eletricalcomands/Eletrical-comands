@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eletrical commands - Dashboard</title>
+    <title>ELECTRICAL COMMANDS</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -28,7 +28,7 @@
 
         header { text-align: center; padding: 25px 10px; }
         header img { width: 60px; margin-bottom: 5px; }
-        header h1 { font-size: 1.3rem; margin: 0; color: var(--primary); letter-spacing: 1px; }
+        header h1 { font-size: 1.3rem; margin: 0; color: var(--primary); letter-spacing: 1px; text-transform: uppercase; }
 
         .container {
             width: 92%;
@@ -94,19 +94,25 @@
         .data-item small { font-size: 0.65rem; opacity: 0.6; display: block; text-transform: uppercase; }
 
         .date-footer { margin-top: 10px; font-size: 0.65rem; opacity: 0.5; font-style: italic; display: flex; justify-content: space-between; align-items: center; }
-        .btn-delete { background: transparent; color: #ff4444; border: none; font-size: 0.65rem; width: auto; padding: 0; cursor: pointer; text-decoration: underline; }
+        
+        .actions { display: flex; gap: 15px; }
+        .btn-action { background: transparent; border: none; font-size: 0.65rem; cursor: pointer; text-decoration: underline; padding: 0; font-weight: bold; text-transform: uppercase; }
+        .btn-edit { color: var(--accent); }
+        .btn-delete { color: #ff4444; }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="web-app-manifest-192x192.png" alt="Sinergia">
-        <h1>ELETRICAL COMANDS</h1>
+        <img src="web-app-manifest-192x192.png" alt="EC Logo">
+        <h1>ELECTRICAL COMMANDS</h1>
     </header>
 
     <div class="container">
-        <h2>Dados do Inversor (Fixos)</h2>
+        <h2 id="formTitle">Dados do Inversor (Fixos)</h2>
         <form id="commandForm">
+            <input type="hidden" id="editIndex" value="-1">
+            
             <div class="input-group">
                 <label>Cliente / Usina</label>
                 <input type="text" id="clientName" required placeholder="Ex: Sítio Pôr do Sol">
@@ -142,13 +148,12 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-register">Salvar Registro Completo</button>
+            <button type="submit" id="mainBtn" class="btn-register">Salvar Registro Completo</button>
             <button type="button" class="btn-portal" onclick="abrirPortal()">🌐 Abrir Portal da Marca</button>
         </form>
     </div>
 
-    <div class="list-container" id="usinaList">
-        </div>
+    <div class="list-container" id="usinaList"></div>
 
     <script>
         const portalLinks = {
@@ -167,13 +172,21 @@
 
         const form = document.getElementById('commandForm');
         const list = document.getElementById('usinaList');
+        const mainBtn = document.getElementById('mainBtn');
+        const formTitle = document.getElementById('formTitle');
+        const editIndexInput = document.getElementById('editIndex');
 
         function loadUsinas() {
             const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
             list.innerHTML = '<h2 style="text-align:center">Histórico Técnico</h2>';
             
-            usinas.slice().reverse().forEach((u, index) => {
-                const actualIndex = usinas.length - 1 - index;
+            // Usamos uma cópia para inverter sem perder a referência do índice original
+            const displayUsinas = [...usinas].reverse();
+
+            displayUsinas.forEach((u, displayIndex) => {
+                // O índice original no array 'usinas'
+                const originalIndex = usinas.length - 1 - displayIndex;
+                
                 list.innerHTML += `
                     <div class="usina-card">
                         <div class="card-header">
@@ -195,7 +208,10 @@
 
                         <div class="date-footer">
                             <span>📅 ${u.data}</span>
-                            <button class="btn-delete" onclick="removerUsina(${actualIndex})">Excluir</button>
+                            <div class="actions">
+                                <button class="btn-action btn-edit" onclick="editarUsina(${originalIndex})">Editar</button>
+                                <button class="btn-action btn-delete" onclick="removerUsina(${originalIndex})">Excluir</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -207,7 +223,7 @@
             const agora = new Date();
             const dataFormatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-            const novaUsina = {
+            const dadosUsina = {
                 nome: document.getElementById('clientName').value,
                 marca: document.getElementById('inverterBrand').value,
                 sn: document.getElementById('serialNumber').value,
@@ -216,12 +232,47 @@
                 data: dataFormatada
             };
 
-            const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
-            usinas.push(novaUsina);
+            let usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
+            const index = parseInt(editIndexInput.value);
+
+            if (index === -1) {
+                // Novo registro
+                usinas.push(dadosUsina);
+            } else {
+                // Atualizando registro existente
+                usinas[index] = dadosUsina;
+                // Reseta o estado do formulário
+                editIndexInput.value = "-1";
+                mainBtn.innerText = "Salvar Registro Completo";
+                mainBtn.style.background = "var(--primary)";
+                formTitle.innerText = "Dados do Inversor (Fixos)";
+            }
+
             localStorage.setItem('usinas_v2', JSON.stringify(usinas));
             form.reset();
             loadUsinas();
         });
+
+        function editarUsina(index) {
+            const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
+            const u = usinas[index];
+
+            // Preenche o formulário
+            document.getElementById('clientName').value = u.nome;
+            document.getElementById('inverterBrand').value = u.marca;
+            document.getElementById('serialNumber').value = u.sn;
+            document.getElementById('generation').value = u.geracao;
+            document.getElementById('uptime').value = u.tempo;
+            
+            // Configura para o modo de edição
+            editIndexInput.value = index;
+            mainBtn.innerText = "Atualizar Registro";
+            mainBtn.style.background = "var(--accent)";
+            formTitle.innerText = "Editando Registro";
+
+            // Sobe a tela para o formulário
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function removerUsina(index) {
             if(confirm("Excluir este registro técnico?")) {
