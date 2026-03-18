@@ -73,6 +73,7 @@
         .btn-register { background: var(--primary); color: #0c3328; margin-top: 10px; }
         .btn-portal { background: transparent; border: 2px solid var(--accent); color: var(--accent); margin-top: 10px; }
 
+        /* Estilo da Listagem */
         .list-container { width: 92%; max-width: 480px; }
         .usina-card {
             background: var(--card);
@@ -93,24 +94,19 @@
         .data-item small { font-size: 0.65rem; opacity: 0.6; display: block; text-transform: uppercase; }
 
         .date-footer { margin-top: 10px; font-size: 0.65rem; opacity: 0.5; font-style: italic; display: flex; justify-content: space-between; align-items: center; }
-        
-        .actions-links { display: flex; gap: 15px; }
-        .btn-action { background: transparent; border: none; font-size: 0.65rem; cursor: pointer; text-decoration: underline; padding: 0; text-transform: uppercase; font-weight: bold; }
-        .btn-delete { color: #ff4444; }
-        .btn-edit { color: var(--accent); }
+        .btn-delete { background: transparent; color: #ff4444; border: none; font-size: 0.65rem; width: auto; padding: 0; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <header>
         <img src="web-app-manifest-192x192.png" alt="Sinergia">
-        <h1>SINERGIA ELÉTRICA</h1>
+        <h1>ELETRICAL COMANDS</h1>
     </header>
 
     <div class="container">
-        <h2 id="formTitle">Dados do Inversor (Fixos)</h2>
+        <h2>Dados do Inversor (Fixos)</h2>
         <form id="commandForm">
-            <input type="hidden" id="editIndex" value="-1">
             <div class="input-group">
                 <label>Cliente / Usina</label>
                 <input type="text" id="clientName" required placeholder="Ex: Sítio Pôr do Sol">
@@ -146,4 +142,97 @@
                 </div>
             </div>
 
-            <button type="submit" id="submitBtn" class="btn-register">Salvar Registro Completo</button>
+            <button type="submit" class="btn-register">Salvar Registro Completo</button>
+            <button type="button" class="btn-portal" onclick="abrirPortal()">🌐 Abrir Portal da Marca</button>
+        </form>
+    </div>
+
+    <div class="list-container" id="usinaList">
+        </div>
+
+    <script>
+        const portalLinks = {
+            'SUNGROW': 'https://www.isolarcloud.com/',
+            'GROWATT': 'https://server.growatt.com/',
+            'WEG': 'https://home.v2.weg-v-net.com/',
+            'FOX': 'https://www.foxesscloud.com/',
+            'SOLIS': 'https://www.soliscloud.com/',
+            'SAJ': 'https://www.saj-electric.com/'
+        };
+
+        function abrirPortal() {
+            const marca = document.getElementById('inverterBrand').value;
+            window.open(portalLinks[marca], '_blank');
+        }
+
+        const form = document.getElementById('commandForm');
+        const list = document.getElementById('usinaList');
+
+        function loadUsinas() {
+            const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
+            list.innerHTML = '<h2 style="text-align:center">Histórico Técnico</h2>';
+            
+            usinas.slice().reverse().forEach((u, index) => {
+                const actualIndex = usinas.length - 1 - index;
+                list.innerHTML += `
+                    <div class="usina-card">
+                        <div class="card-header">
+                            <h3>${u.nome}</h3>
+                            <span style="color:var(--primary); font-size:0.7rem; font-weight:bold">${u.marca}</span>
+                        </div>
+                        
+                        <span class="section-title">Registro do Inversor</span>
+                        <div class="data-grid" style="margin-bottom:10px">
+                            <div class="data-item"><small>Marca</small><p>${u.marca}</p></div>
+                            <div class="data-item"><small>Nº de Série</small><p>${u.sn}</p></div>
+                        </div>
+
+                        <span class="section-title">Detalhes da Geração</span>
+                        <div class="data-grid">
+                            <div class="data-item"><small>Total Gerado</small><p style="color:var(--warning)">${u.geracao} kWh</p></div>
+                            <div class="data-item"><small>Tempo de Atividade</small><p>${u.tempo}</p></div>
+                        </div>
+
+                        <div class="date-footer">
+                            <span>📅 ${u.data}</span>
+                            <button class="btn-delete" onclick="removerUsina(${actualIndex})">Excluir</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const agora = new Date();
+            const dataFormatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+            const novaUsina = {
+                nome: document.getElementById('clientName').value,
+                marca: document.getElementById('inverterBrand').value,
+                sn: document.getElementById('serialNumber').value,
+                geracao: document.getElementById('generation').value || '0',
+                tempo: document.getElementById('uptime').value || 'N/A',
+                data: dataFormatada
+            };
+
+            const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
+            usinas.push(novaUsina);
+            localStorage.setItem('usinas_v2', JSON.stringify(usinas));
+            form.reset();
+            loadUsinas();
+        });
+
+        function removerUsina(index) {
+            if(confirm("Excluir este registro técnico?")) {
+                const usinas = JSON.parse(localStorage.getItem('usinas_v2') || '[]');
+                usinas.splice(index, 1);
+                localStorage.setItem('usinas_v2', JSON.stringify(usinas));
+                loadUsinas();
+            }
+        }
+
+        loadUsinas();
+    </script>
+</body>
+</html>
